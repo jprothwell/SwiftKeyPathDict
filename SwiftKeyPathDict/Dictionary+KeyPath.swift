@@ -6,18 +6,18 @@
 //  Copyright © 2018 TangChi. All rights reserved.
 //
 
-struct KeyPath {
-    var segments: [String]
+public struct KeyPath {
+    public var segments: [String]
     
-    var isEmpty: Bool { return segments.isEmpty }
-    var path: String {
+    public var isEmpty: Bool { return segments.isEmpty }
+    public var path: String {
         return segments.joined(separator: ".")
     }
     
     /// Strips off the first segment and returns a pair
     /// consisting of the first segment and the remaining key path.
     /// Returns nil if the key path has no segments.
-    func headAndTail() -> (head: String, tail: KeyPath)? {
+    public func headAndTail() -> (head: String, tail: KeyPath)? {
         guard !isEmpty else { return nil }
         var tail = segments
         let head = tail.removeFirst()
@@ -26,35 +26,37 @@ struct KeyPath {
 }
 
 extension KeyPath {
-    init(_ string: String) {
+    public init(_ string: String) {
         segments = string.components(separatedBy: ".")
     }
 }
 
 extension KeyPath: ExpressibleByStringLiteral {
-    init(stringLiteral value: String) {
+    public init(stringLiteral value: String) {
         self.init(value)
     }
-    init(unicodeScalarLiteral value: String) {
+    public init(unicodeScalarLiteral value: String) {
         self.init(value)
     }
-    init(extendedGraphemeClusterLiteral value: String) {
+    public init(extendedGraphemeClusterLiteral value: String) {
         self.init(value)
     }
 }
 
-protocol StringProtocol {
+
+public protocol StringMakeProtocol {
     init(string s: String)
 }
 
-extension String: StringProtocol {
-    init(string s: String) {
+
+extension String: StringMakeProtocol {
+    public init(string s: String) {
         self = s
     }
 }
 
-extension Dictionary where Key: StringProtocol {
-    subscript(keyPath keyPath: KeyPath) -> Any? {
+extension Dictionary where Key: StringMakeProtocol {
+    public subscript(keyPath keyPath: KeyPath) -> Any? {
     
         get {
             switch keyPath.headAndTail() {
@@ -107,13 +109,13 @@ extension Dictionary where Key: StringProtocol {
     }
 }
 
-extension Dictionary where Key: StringProtocol {
-    subscript(string keyPath: KeyPath) -> String? {
+extension Dictionary where Key: StringMakeProtocol {
+    public subscript(string keyPath: KeyPath) -> String? {
         get { return self[keyPath: keyPath] as? String }
         set { self[keyPath: keyPath] = newValue }
     }
     
-    subscript(dict keyPath: KeyPath) -> [Key: Any]? {
+    public subscript(dict keyPath: KeyPath) -> [Key: Any]? {
         get { return self[keyPath: keyPath] as? [Key: Any] }
         set { self[keyPath: keyPath] = newValue }
     }
